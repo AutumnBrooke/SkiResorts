@@ -1,0 +1,174 @@
+--How many resorts are situated on each continent?
+
+SELECT COUNT(resort) AS num_of_resorts,
+	   continent
+FROM .resorts
+GROUP BY continent
+ORDER BY num_of_resorts DESC
+
+--Return:
+num_of_resorts  continent
+360	            Europe
+98	            North America
+24	            Asia
+10	            Oceania
+7	              South America
+
+--How many resorts are in each country?
+
+SELECT COUNT(resort) AS num_of_resorts,
+	   country
+FROM .resorts
+GROUP BY country
+ORDER BY num_of_resorts DESC
+
+--Return:
+num_of_resorts  country
+89	            Austria
+81	            France
+78	            United States
+59	            Switzerland
+44	            Italy
+22	            Germany
+20	            Canada
+14	            Japan
+10	            Norway
+8	              Spain
+6	              Sweden
+5	              New Zealand
+5	              Slovakia
+5	              Chile
+5	              Australia
+5	              Andorra
+4	              Bulgaria
+4	              Slovenia
+4	              Russia
+4	              United Kingdom
+3	              Turkey
+3	              Finland
+2	              Czech Republic
+2	              Argentina
+2	              South Korea
+2	              Poland
+2	              Romania
+1	              Greece
+1	              Iran
+1	              Serbia
+1	              Ukraine
+1	              Bosnia and Herzegovina
+1	              China
+1	              Georgia
+1	              Kazakhstan
+1	              Lebanon
+1	              Liechtenstein
+1	              Lithuania
+
+--What is the average daily adult price per continent?
+
+SELECT continent,
+	   AVG(price) as avg_price
+FROM .resorts
+GROUP BY continent
+ORDER BY avg_price DESC
+
+--Return:
+continent        avg_price
+North America	   76
+Oceania	         63
+South America	   56
+Europe	         41
+Asia	           32
+
+--What is the average daily adult price per country?
+
+SELECT country,
+	   AVG(price) as avg_price
+FROM .resorts
+GROUP BY country
+ORDER BY avg_price DESC
+
+--Return:
+
+country           avg_price
+United States	    81
+New Zealand	      65
+Australia	        61
+Canada	          60
+Chile	            60
+Switzerland	      53
+Lebanon	          51
+Argentina	        47
+Austria	          44
+Norway	          44
+Andorra	          43
+Finland	          42
+Japan	            42
+Liechtenstein	    42
+Spain	            41
+Sweden	          41
+Italy	            41
+France	          38
+United Kingdom	  34
+Ukraine	          32
+Romania	          32
+Slovakia	        32
+Iran	            31
+Greece	          30
+Slovenia	        30
+Serbia	          30
+Lithuania	        29
+Germany	          29
+Czech Republic	  28
+South Korea	      28
+Bulgaria	        26
+Kazakhstan	      24
+Poland	          21
+Bosnia and Herzegovina	20
+Russia	          19
+Georgia	          14
+Turkey	           5
+China	             0
+
+--Does being child friendly affect the daily adult price of a resort?
+
+WITH cf AS
+(SELECT resort,
+	   price,
+	   CASE WHEN child_friendly = 1 THEN 'yes'
+	   ELSE 'no'
+	   END AS child_friendly
+FROM .resorts)
+
+SELECT AVG(price) AS avg_price,
+	   child_friendly
+FROM cf
+GROUP BY child_friendly
+
+--Return:
+price   child_frriendly
+45	    no
+48	    yes
+
+-How many resorts are childfriendly and not?
+
+SELECT COUNT(CASE WHEN child_friendly = 1 THEN 1 END)  AS yes,
+	   COUNT(CASE WHEN child_friendly = 0 THEN 1 END) AS no
+FROM .resorts
+
+--Return:
+
+yes no
+495	4
+
+--What is the highest point and where is it located?
+
+SELECT resort,
+	   highest_point
+FROM .resorts
+ORDER BY highest_point DESC
+OFFSET 0 ROWS FETCH FIRST 1 ROW ONLY
+
+--Return:
+
+resort        highest_point
+Breckenridge	3914
